@@ -1,0 +1,29 @@
+﻿@using ZombieDiceLibrary.Models
+@using System.Linq;
+
+<div class="players">
+    <div>Players</div>
+    <ul class="list-group">
+        @for(var i = 0; i < Players.Count; i++)
+        {
+            @if (HasStarted == true && i == WhoseTurn)
+            {
+                <li class="list-group-item active_player">@Players[i].Name</li>
+            }
+            else
+            {
+                <li class="list-group-item">@Players[i].Name</li>
+            }
+            
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<Player> Players { get; set; }
+    [Parameter]
+    public int? WhoseTurn { get; set; }
+    [Parameter]
+    public bool HasStarted { get; set; }
+}

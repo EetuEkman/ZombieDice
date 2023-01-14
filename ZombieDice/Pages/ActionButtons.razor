@@ -1,0 +1,69 @@
+﻿@using ZombieDiceLibrary
+@using ZombieDiceLibrary.Models
+
+<div class="actions mt-2">
+    @if (Game.HasStarted == false)
+    {
+        <button @onclick="OnStartClick" class="btn zombie_button">Start game</button>
+    }
+    else
+    {
+        @if (Player.Id == Game.Players[Game.WhoseTurn].Id)
+        {
+            switch (Game.TurnPhase)
+            {
+                case TurnPhase.Pick:
+                    <button @onclick="OnPickDice" class="btn zombie_button">Pick dice</button>
+                    break;
+                case TurnPhase.Roll:
+                    <button @onclick="OnRollDice" class="btn zombie_button">Roll dice</button>
+                    break;
+                case TurnPhase.Decide:
+                    <button @onclick="OnKeepRolling" class="btn zombie_button">Keep rolling</button>
+                    <button @onclick="OnStay" class="btn zombie_button">Stay</button>
+                    break;
+                case TurnPhase.End:
+                    <button @onclick="OnEndTurn" class="btn zombie_button">End turn</button>
+                    break;
+            }
+        }
+    }
+</div>
+
+@code {
+    [Parameter]
+    public Game Game { get; set; }
+
+    [Parameter]
+    public Player Player { get; set; }
+
+    private void OnStartClick()
+    {
+        Game.Start();
+    }
+
+    private void OnPickDice()
+    {
+        Game.PickDice();
+    }
+
+    private void OnRollDice()
+    {
+        Game.RollDice();
+    }
+
+    private void OnKeepRolling()
+    {
+        Game.KeepRolling();
+    }
+
+    private void OnStay()
+    {
+        Game.Stay();
+    }
+
+    private void OnEndTurn()
+    {
+        Game.NextTurn();
+    }
+}

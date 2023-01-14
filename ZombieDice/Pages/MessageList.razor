@@ -1,0 +1,18 @@
+﻿<div class="container-sm">
+    <ul class="list-group messages">
+        
+            @foreach(var message in Enumerable.Reverse(Messages))
+            {
+                // New messages are pushed to the top of the list.
+                // Users are used to the message windows to display the newest messages first on the bottom.
+                // Therefore we want to go through the messages in reverse order.
+                <ul class="list-group-item">@message</ul>
+            }
+        
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<string> Messages { get; set; }
+}

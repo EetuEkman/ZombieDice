@@ -1,0 +1,42 @@
+﻿@using ZombieDiceLibrary
+
+@if (Die is not null)
+{
+    @switch (Die.Color)
+    {
+        case ZombieDiceLibrary.Colors.Green:
+            <div class="die green">
+                @if (Die.Facing is not null)
+                {
+                    <img src="@Die.Facing?.Image" />
+                }
+            </div>
+
+            break;
+
+        case ZombieDiceLibrary.Colors.Yellow:
+            <div class="die yellow">
+                @if (Die.Facing is not null)
+                {
+                    <img src="@Die.Facing?.Image" />
+                }
+            </div>
+
+            break;
+
+        case ZombieDiceLibrary.Colors.Red:
+            <div class="die red">
+                @if (Die.Facing is not null)
+                {
+                    <img src="@Die.Facing?.Image" />
+                }
+            </div>
+
+            break;
+    }
+}
+
+@code {
+    [Parameter]
+    public Die? Die { get; set; }
+}

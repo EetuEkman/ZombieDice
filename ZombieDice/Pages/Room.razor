@@ -1,0 +1,81 @@
+﻿@page "/room/{id}"
+
+<PageTitle>Room @Game?.Id</PageTitle>
+
+<div class="game_info">
+    <div>Game name: @Game?.Id</div>
+    <div>Password: @Game?.Password</div>
+</div>
+
+@if (Game is not null)
+{
+    @if (Game.HasStarted == false)
+    {
+        <p class="turn_phase">Setup</p>
+    }
+
+    @if (Game.HasStarted)
+    {
+        <div>
+            @switch (Game.TurnPhase)
+            {
+                // Display the current player and turn phase.
+
+                case ZombieDiceLibrary.TurnPhase.Pick:
+                    <p class="turn_phase">@Game.Players[Game.WhoseTurn].Name is picking dice</p>
+                    break;
+                case ZombieDiceLibrary.TurnPhase.Roll:
+                    <p class="turn_phase">@Game.Players[Game.WhoseTurn].Name is rolling dice</p>
+                    break;
+
+                case ZombieDiceLibrary.TurnPhase.Decide:
+                    <p class="turn_phase">@Game.Players[Game.WhoseTurn].Name is deciding</p>
+                    break;
+                case ZombieDiceLibrary.TurnPhase.End:
+                    <p class="turn_phase">@Game.Players[Game.WhoseTurn].Name got shotgunned!</p>
+                    break;
+            }
+
+            <!--
+            <div class="dice_cup">
+                <div class="rectangle">
+                    <div class="oval top_oval"></div>
+                    <div class="oval bottom_oval"></div>
+                </div>
+            </div>
+            -->
+            
+            <DiceDisplay Dice="@Game.DiceInHand"></DiceDisplay>
+       
+            <DiceDisplay Dice="@Game.RolledDice"></DiceDisplay>
+            
+            <DiceDisplay Dice="@Game.SavedDice"></DiceDisplay>
+
+            @if (Game.Brains > 0)
+            {
+                <p>Brains: @Game.Brains</p>
+            }
+
+        </div>
+    }
+
+    <ActionButtons Game="Game" Player="Player"></ActionButtons>
+
+    <div class="container-lg">
+        <div class="row gx-1">
+            <div class="col-md mt-2">
+                <MessageList Messages="Game.Messages"></MessageList>
+            </div>
+            <div class="col mt-2">
+                <PlayerList Players="Game.Players" HasStarted="Game.HasStarted" WhoseTurn="Game.WhoseTurn"></PlayerList>
+            </div>
+            <div class="col mt-2">
+                <Notepad Players="Game.Players"></Notepad>
+            </div>
+        </div>
+    </div>
+}
+
+@code
+{
+}

@@ -1,0 +1,54 @@
+﻿@page "/lobby"
+
+<PageTitle>Lobby</PageTitle>
+
+<h1>Lobby</h1>
+
+<p>Hello @user?.Name</p>
+
+<label for="password">Password</label>
+<input @bind="password" id="password" type="text" />
+<button @onclick="ClickCreate" class="btn btn-primary">Create game</button>
+
+<form>
+    <div class="form-group">
+        <label for="join_game">Game id</label>
+        <input type="text" id="join_game" class="form-control" />
+    </div>
+    <button @onclick="ClickJoin" class="btn btn-primary">Join game</button>
+</form>
+
+<p @bind="errorText"></p>
+
+
+Users
+
+    <ul>
+        @foreach (var user in userManager.Users)
+        {
+            <li>@user.Name</li>
+        }
+    </ul>
+
+@code
+{
+    void ClickCreate()
+    {
+        if (user is null)
+        {
+            return;
+        }
+
+        CreateGame();
+    }
+
+    void ClickJoin()
+    {
+        if (user is null)
+        {
+            return;
+        }
+
+        JoinGame(user.Id, password);
+    }
+}

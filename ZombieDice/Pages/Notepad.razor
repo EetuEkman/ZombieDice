@@ -1,0 +1,23 @@
+﻿@using ZombieDiceLibrary.Models
+
+<div class="notepad">
+    <div></div>
+    <ul>
+        @for (var i = 0; i < 10; i++)
+        {
+            if (Players.ElementAtOrDefault(i) is not null)
+            {
+                <li><span>@Players[i].Name</span><span class="brain_count">@Players[i].Brains</span></li>
+            }
+            else
+            {
+                <li></li>
+            }
+        }
+    </ul>
+</div>
+
+@code {
+    [Parameter]
+    public List<Player> Players { get; set; }
+}

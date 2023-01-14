@@ -1,0 +1,59 @@
+﻿@page "/"
+
+<PageTitle>Zombie dice</PageTitle>
+
+<form>
+    <fieldset class="border p-2">
+        <legend class="w-auto float-none">Player name</legend>
+        <div>
+            <label for="name" data-bs-toggle="tooltip" data-bs-placement="top" title="Name is required." class="required">Player name</label>
+            <input @bind="@name" type="text" id="name" />
+            @if (String.IsNullOrEmpty(nameError) == false)
+            {
+                <span class="text-danger">@nameError</span>
+            }
+        </div>
+    </fieldset>
+
+    <fieldset class="border p-2">
+        <legend class="w-auto float-none">Create game</legend>
+        <div>
+            <label for="password" data-bs-toggle="tooltip" data-bs-placement="top" title="Password is optional." class="optional">Password</label>
+            <input @bind="password" type="text" id="password" />
+            @if (String.IsNullOrEmpty(createError) == false)
+            {
+                <span class="text-danger">@createError</span>
+            }
+        </div>
+        <button @onclick="onCreateGameClick" @onclick:preventDefault class="btn btn-sm zombie_button">Create game</button>
+    </fieldset>
+
+    <fieldset class="border p-2">
+        <legend class="w-auto float-none">Join game</legend>
+        <div>
+            <label for="game_name">Game name</label>
+            <input @bind="gameName" type="text" id="game_name" />
+        </div>
+        <div>
+            <label for="join_password" class="optional">Password</label>
+            <input @bind="joinPassword" type="text" id="join_password" />
+        </div>
+        <button @onclick="onJoinGameClick" @onclick:preventDefault class="btn btn-sm zombie_button">Join game</button>
+        @if (String.IsNullOrEmpty(joinError) == false)
+        {
+            <span class="text-danger">@joinError</span>
+        }
+    </fieldset>
+</form>
+
+@code {
+    private void onCreateGameClick()
+    {
+        createGame();
+    }
+
+    private void onJoinGameClick()
+    {
+        joinGame();
+    }
+}

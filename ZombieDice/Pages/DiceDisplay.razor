@@ -1,0 +1,17 @@
+﻿@using ZombieDiceLibrary
+
+<div class="dice my-1">
+    @if (Dice is not null)
+    {
+        @foreach (var die in Dice)
+        {
+            <DieDisplay Die="@die"></DieDisplay>
+        }
+    }
+
+</div>
+
+@code {
+    [Parameter]
+    public ICollection<Die>? Dice { get; set; }
+}
