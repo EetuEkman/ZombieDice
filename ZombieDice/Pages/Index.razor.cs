@@ -37,7 +37,7 @@ namespace ZombieDice.Pages
             base.OnInitialized();
         }
 
-        private bool validateName(string input)
+        private bool ValidateName(string input)
         {
             nameError = "";
 
@@ -58,24 +58,25 @@ namespace ZombieDice.Pages
             return true;
         }
 
-        private async Task persistUser(User user)
+        private async Task PersistUser(User user)
         {
             var json = JsonSerializer.Serialize(user);
 
             await Storage.SetAsync("user", json);
         }
 
-        private async void createGame()
+        private async void CreateGame()
         {
             createError = "";
 
-            if (validateName(this.name) == false)
+            if (ValidateName(this.name) == false)
             {
                 return;
             }
 
             var user = UserManager.NewUser(this.name);
-            await persistUser(user);
+
+            await PersistUser(user);
 
             var gameId = GameManager.NewGame(user, password);
 
@@ -89,11 +90,11 @@ namespace ZombieDice.Pages
             NavigationManager.NavigateTo("/room/" + gameId);
         }
 
-        private async void joinGame()
+        private async void JoinGame()
         {
             joinError = "";
 
-            if (validateName(this.name) == false)
+            if (ValidateName(this.name) == false)
             {
                 return;
             }
@@ -140,7 +141,7 @@ namespace ZombieDice.Pages
 
             var user = UserManager.NewUser(this.name);
 
-            await persistUser(user);
+            await PersistUser(user);
 
             NavigationManager.NavigateTo("/room/" + game.Id);
         }

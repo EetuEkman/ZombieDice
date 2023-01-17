@@ -10,4 +10,8 @@
     <ProjectReference Include="..\ZombieDiceLibrary\ZombieDiceLibrary.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\" />
+  </ItemGroup>
+
 </Project>

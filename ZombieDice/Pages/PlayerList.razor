@@ -1,11 +1,17 @@
 ﻿@using ZombieDiceLibrary.Models
 @using System.Linq;
 
+@*
+    Displays participating players.
+*@
+
 <div class="players">
     <div>Players</div>
     <ul class="list-group">
         @for(var i = 0; i < Players.Count; i++)
         {
+            // Currently active player is highlighted.
+
             @if (HasStarted == true && i == WhoseTurn)
             {
                 <li class="list-group-item active_player">@Players[i].Name</li>

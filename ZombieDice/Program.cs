@@ -1,7 +1,4 @@
-using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.ResponseCompression;
-using ZombieDice.Data;
 using ZombieDiceLibrary;
 using ZombieDiceLibrary.Models;
 
@@ -17,11 +14,25 @@ builder.Services.AddResponseCompression(options =>
         );
 });
 
+// Handles user related functionality.
+
 builder.Services.AddSingleton<UserManager>();
+
+// Maximum allowed concurrent game instances.
 
 var maxGames = builder.Configuration.GetValue<int>("GameManager:MaxGames");
 
-var gameManagerConfiguration = new GameManagerConfiguration() { MaxGames = maxGames };
+// Minutes of inactivity before game is closed.
+
+var minutesBeforeClose = builder.Configuration.GetValue<int>("GameManager:MinuesBeforeClose");
+
+var gameManagerConfiguration = new GameManagerConfiguration()
+{
+    MaxGames = maxGames,
+    MinutesBeforeClose = minutesBeforeClose
+};
+
+// Keeps a track of, handles creation and deletion of game instances.
 
 builder.Services.AddSingleton<GameManager>(sp => new GameManager(gameManagerConfiguration));
 

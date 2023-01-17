@@ -2,6 +2,9 @@
 
 namespace ZombieDiceLibrary
 {
+    /// <summary>
+    /// Participating players, game state and methods.
+    /// </summary>
     public class Game
     {
         public Game(string id, User creator, string? password)
@@ -20,14 +23,90 @@ namespace ZombieDiceLibrary
             Password = password;
 
             DiceCup = AllDice();
+
+            SetLastModified();
         }
 
+        /// <summary>
+        /// Identifier of the Game instance.
+        /// </summary>
         public string Id { get; private set; }
+
+        /// <summary>
+        /// Event to be fired on state change that the components can listen to.
+        /// </summary>
+        public event Action OnChange;
+
+        /// <summary>
+        /// Fires of the OnChange event so that the components using the game state know the state has changed.
+        /// </summary>
+        /// 
+        private void Notify()
+        {
+            SetLastModified();
+
+            OnChange?.Invoke();
+        }
+        //private void Notify() => OnChange?.Invoke();
+        /// <summary>
+        /// Represents which player's turn it is. Index of a player's list.
+        /// </summary>
+        public int WhoseTurn { get; private set; }
+
+        /// <summary>
+        /// Represents the current turn phase.
+        /// </summary>
+        public TurnPhase? TurnPhase { get; private set; }
 
         /// <summary>
         /// Represents the players participating in the current game.
         /// </summary>
         public List<Player> Players { get; private set; } = new();
+        /// <summary>
+        /// Ending the turn with 13 or more brains causes one more turn before the game ends.
+        /// Holds the index of the player who ended their turn with 13 or more brains.
+        /// </summary>
+        public int? WhoWentOverThreshold { get; set; }
+        /// <summary>
+        /// Represents the password to join the game.
+        /// </summary>
+        public string? Password { get; private set; }
+
+        /// <summary>
+        /// Used to keep tally of the brains in the case of dice running out of the cup.
+        /// Brains are returned to the cup. Shotguns stay.
+        /// </summary>
+        public int Brains { get; set; } = 0;
+        /// <summary>
+        /// Used to check if the game has been started.
+        /// </summary>
+        public bool HasStarted { get; private set; } = false;
+        /// <summary>
+        /// Represents the message log.
+        /// </summary>
+        public List<string> Messages { get; private set; } = new();
+        /// <summary>
+        /// Represents the datetime of the last activity.
+        /// </summary>
+        public DateTime LastModified { get; private set; }
+
+        private void SetLastModified()
+        {
+            LastModified = DateTime.Now;
+        }
+
+        // Listeners subscribing to this event are notified
+        // when the game instance closes.
+
+        public event Action OnClose;
+
+        private void NotifyCloseGame() => OnClose?.Invoke();
+
+        // Called by the game manager when the game is removed from the games list.
+        public void CloseGame()
+        {
+            NotifyCloseGame();
+        }
 
         public void PlayerJoins(Player player)
         {
@@ -49,25 +128,6 @@ namespace ZombieDiceLibrary
             }
         }
 
-        /// <summary>
-        /// Event to be fired on state change that the components can listen to.
-        /// </summary>
-        public event Action OnChange;
-
-        /// <summary>
-        /// Fires of the OnChange event so that the components using the game state know the state has changed.
-        /// </summary>
-        private void Notify() => OnChange?.Invoke();
-        /// <summary>
-        /// Represents which player's turn it is. Index of a player's list.
-        /// </summary>
-        public int WhoseTurn { get; private set; }
-
-        /// <summary>
-        /// Represents the current turn phase.
-        /// </summary>
-        public TurnPhase? TurnPhase { get; private set; }
-
         public void SetTurnPhase(TurnPhase turnPhase)
         {
             // Check the last turn.
@@ -88,15 +148,11 @@ namespace ZombieDiceLibrary
 
             TurnPhase = turnPhase;
 
+            SetLastModified();
+
             Notify();
         }
-
-        /// <summary>
-        /// Ending the turn with 13 or more brains causes one more turn before the game ends.
-        /// Holds the index of the player who ended their turn with 13 or more brains.
-        /// </summary>
-        public int? WhoWentOverThreshold { get; set; }
-
+    
         public void NextTurn()
         {
             if (HasStarted == false)
@@ -104,14 +160,14 @@ namespace ZombieDiceLibrary
                 return;
             }
 
-            var newWhoseTurn = WhoseTurn + 1;
+            var whoseTurn = WhoseTurn + 1;
 
-            if (newWhoseTurn > Players.Count - 1)
+            if (whoseTurn > Players.Count - 1)
             {
-                newWhoseTurn = 0;
+                whoseTurn = 0;
             }
 
-            if (newWhoseTurn == WhoWentOverThreshold)
+            if (whoseTurn == WhoWentOverThreshold)
             {
                 var winner = Players.MaxBy(p => p.Brains);
 
@@ -122,11 +178,11 @@ namespace ZombieDiceLibrary
                 return;
             }
 
-            if (Players[newWhoseTurn].Brains >= 13)
+            if (Players[whoseTurn].Brains >= 13)
             {
-                WhoWentOverThreshold = newWhoseTurn;
+                WhoWentOverThreshold = whoseTurn;
 
-                SendMessage($"{Players[newWhoseTurn].Name} has 13 or more brains. Last round.");
+                SendMessage($"{Players[whoseTurn].Name} has 13 or more brains. Last round.");
             }
             
             SetTurnPhase(ZombieDiceLibrary.TurnPhase.Pick);
@@ -135,7 +191,7 @@ namespace ZombieDiceLibrary
 
             ResetDice();
 
-            WhoseTurn = newWhoseTurn;
+            WhoseTurn = whoseTurn;
 
             SendMessage($"{Players[WhoseTurn].Name}'s turn.");
         }
@@ -180,21 +236,7 @@ namespace ZombieDiceLibrary
 
             Notify();
         }
-        /// <summary>
-        /// Represents the password to join the game.
-        /// </summary>
-        public string? Password { get; private set; }
-
-        /// <summary>
-        /// Used to keep tally of the brains in the case of dice running out of the cup.
-        /// Brains are returned to the cup. Shotguns stay.
-        /// </summary>
-        public int Brains { get; set; } = 0;
-        /// <summary>
-        /// Used to check if the game has been started.
-        /// </summary>
-        public bool HasStarted { get; private set; } = false;
-
+        
         /// <summary>
         /// Starts the game.
         /// </summary>
@@ -228,11 +270,6 @@ namespace ZombieDiceLibrary
 
             SendMessage("Game has ended.");
         }
-
-        /// <summary>
-        /// Represents the message log.
-        /// </summary>
-        public List<string> Messages { get; private set; } = new();
 
         public void SendMessage(string message)
         {
@@ -417,23 +454,6 @@ namespace ZombieDiceLibrary
             SendMessage($"{Players[WhoseTurn].Name} stays, saving {brains} brains.");
 
             NextTurn();
-        }
-
-        private void BrainsToCup()
-        {
-            var brains = SavedDice.Where(die => die.Facing?.Value == ZombieDieFacings.Brain).ToList();
-
-            Brains = brains.Count();
-
-            var diceCup = DiceCup.Concat(brains).ToList();
-
-            DiceCup = diceCup;
-
-            var shotguns = SavedDice.Where(die => die.Facing?.Value == ZombieDieFacings.Shotgun).ToList();
-
-            SavedDice = shotguns;
-
-            Notify();
         }
 
         public void PickDice()

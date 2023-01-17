@@ -35,6 +35,11 @@ namespace ZombieDice.Pages
             await InvokeAsync(StateHasChanged);
         }
 
+        private async void OnCloseHandler()
+        {
+            NavigationManager.NavigateTo("/", true);
+        }
+
         protected override void OnInitialized()
         {
             base.OnInitialized();
@@ -56,6 +61,8 @@ namespace ZombieDice.Pages
             Game = game;
 
             Game.OnChange += OnChangeHandler;
+
+            Game.OnClose += OnCloseHandler;
 
             // Get the user from session storage.
 
@@ -112,12 +119,7 @@ namespace ZombieDice.Pages
             {
                 Game.OnChange -= OnChangeHandler;
 
-                // Last player leaving deletes the game.
-
-                if (Game.Players.Count == 0)
-                {
-                    GameManager.RemoveGame(Game);
-                }
+                Game.OnClose -= OnCloseHandler;
             }
         }
     }
