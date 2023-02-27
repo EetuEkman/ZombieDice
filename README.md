@@ -2,19 +2,19 @@
 
 Zombie dice dice game ported to Blazor web app.
 
-The app is hosted in [Azure] (https://zombiedice20230227014601.azurewebsites.net/)
+The app is hosted in [Azure](https://zombiedice20230227014601.azurewebsites.net/)
 
 ## Motivation
 
 I wanted to learn Microsoft Blazor. I find the idea of running C# code interesting.
 
-I've had a lot of fun playing a dice game called Zombie dice by Steve Jackson with my friends. I thought that making recreating that game as a Blazor web app would be a great way to get some familiarity with the Blazor.
+I've had a lot of fun playing a dice game called Zombie dice by Steve Jackson with my friends. I thought that recreating that game as a Blazor web app would be a great way to get some familiarity with the Blazor.
 
 The game logic itself was a challenge, but I decided to try to add multiplayer which brought about complexity. I would have to find a way to have a shared game instance and events and handle players joining and leaving without making the game freeze.
 
 Implementing an AI players would make the single player much more interesting. 
 
-Also I would have to find a way to close ununused instances to prevent stale games just piling up taking up resources.
+Also I would have to find a way to close ununused instances to prevent stale games just piling up taking up resources. I also thought to limit the maximum concurrent game instances to say 1000 games.
 
 The idea is that there is a sort of a "lobby" where you can choose to create a game or join an existing game. I thought about adding a chat feature in the lobby but decided against it for the time being at least.
 
