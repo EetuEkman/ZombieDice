@@ -10,12 +10,15 @@ namespace ZombieDiceLibrary
 
         private int minutesBeforeClose;
 
+        private int intervalSeconds;
+
         public event Action OnChange;
 
         private void Notify() => OnChange?.Invoke();
 
         
         public List<Game> Games { get; private set; }
+
         public GameManager(GameManagerConfiguration configuration)
         {
             Games = new();
@@ -24,14 +27,17 @@ namespace ZombieDiceLibrary
 
             minutesBeforeClose = configuration.MinutesBeforeClose;
 
-            timer = new(10000);
+            intervalSeconds = configuration.IntervalSeconds;
+
+            timer = new(intervalSeconds * 1000);
 
             timer.Elapsed += (sender, eventArgs) => HandleTimer();
 
             timer.Start();
         }
 
-        // Every 10 seconds check for and remove stale games.
+        // Ccheck for and remove stale games.
+
         private void HandleTimer()
         {
             // Get a list of game ids to remove.

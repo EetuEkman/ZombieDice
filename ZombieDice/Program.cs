@@ -24,12 +24,17 @@ var maxGames = builder.Configuration.GetValue<int>("GameManager:MaxGames");
 
 // Minutes of inactivity before game is closed.
 
-var minutesBeforeClose = builder.Configuration.GetValue<int>("GameManager:MinuesBeforeClose");
+var minutesBeforeClose = builder.Configuration.GetValue<int>("GameManager:MinutesBeforeClose");
+
+// Seconds between every stale game check
+
+var intervalSeconds = builder.Configuration.GetValue<int>("GameManager:IntervalSeconds");
 
 var gameManagerConfiguration = new GameManagerConfiguration()
 {
     MaxGames = maxGames,
-    MinutesBeforeClose = minutesBeforeClose
+    MinutesBeforeClose = minutesBeforeClose,
+    IntervalSeconds = intervalSeconds
 };
 
 // Keeps a track of, handles creation and deletion of game instances.
